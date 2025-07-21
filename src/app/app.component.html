@@ -45,7 +45,7 @@
       <mat-card>
         <h2>Add IOU</h2>
         <form (ngSubmit)="addIOU()" #iouForm="ngForm" class="add-iou-form">
-          <mat-form-field appearance="fill">
+          <mat-form-field appearance="outline">
             <mat-label>Friend</mat-label>
             <input matInput [matAutocomplete]="auto" [(ngModel)]="newIOU.friend" name="friend" required minlength="3">
             <mat-autocomplete #auto="matAutocomplete">
@@ -54,22 +54,22 @@
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
-          <mat-form-field appearance="fill">
+          <mat-form-field appearance="outline">
             <mat-label>Amount</mat-label>
             <input matInput type="number" [(ngModel)]="newIOU.amount" name="amount" required min="0">
           </mat-form-field>
-          <mat-form-field appearance="fill">
+          <mat-form-field appearance="outline">
             <mat-label>Type</mat-label>
             <mat-select [(ngModel)]="newIOU.type" name="type" required>
               <mat-option value="pay">Pay</mat-option>
               <mat-option value="receive">Receive</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field appearance="fill">
+          <mat-form-field appearance="outline">
             <mat-label>Date</mat-label>
             <input matInput type="date" [(ngModel)]="newIOU.date" name="date">
           </mat-form-field>
-          <mat-form-field appearance="fill">
+          <mat-form-field appearance="outline">
             <mat-label>Note</mat-label>
             <input matInput [(ngModel)]="newIOU.note" name="note">
           </mat-form-field>
@@ -139,38 +139,39 @@
           </div>
         </div>
         <mat-list>
-          <mat-list-item *ngFor="let iou of displayedIOUs">
-            <div class="tran-row" *ngIf="editingIouId !== iou.id">
-              <span class="friend">{{ iou.friend }}</span>
-              <span class="amt" [ngClass]="iou.type">
-                ₹{{ iou.amount }} <small>({{ iou.type }})</small>
-              </span>
-              <span class="date">{{ iou.date | date:'yyyy-MM-dd' }}</span>
-              <span class="status" [ngClass]="iou.status">{{ iou.status }}</span>
-              <span class="note" *ngIf="iou.note">({{ iou.note }})</span>
-              <span class="actions">
-                <button mat-icon-button (click)="startEdit(iou)">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button *ngIf="iou.status==='pending'" mat-mini-button color="primary" (click)="markAsCleared(iou.id)">Clear</button>
-                <button *ngIf="iou.status==='cleared'" mat-mini-button color="accent" (click)="markAsPending(iou.id)">Undo</button>
-                <button mat-mini-button color="warn" (click)="deleteIOU(iou.id)">Delete</button>
-              </span>
-            </div>
-            <div class="tran-edit-row" *ngIf="editingIouId === iou.id">
-              <mat-form-field>
-                <mat-label>Amount</mat-label>
-                <input matInput type="number" [(ngModel)]="iou.amount">
-              </mat-form-field>
-              <mat-form-field>
-                <mat-label>Note</mat-label>
-                <input matInput [(ngModel)]="iou.note">
-              </mat-form-field>
-              <button mat-mini-button color="primary" (click)="saveEdit(iou)">Save</button>
-              <button mat-mini-button color="warn" (click)="cancelEdit()">Cancel</button>
-            </div>
-          </mat-list-item>
-        </mat-list>
+      <div class="custom-list-item" *ngFor="let iou of displayedIOUs">
+        <div class="tran-row" *ngIf="editingIouId !== iou.id">
+          <span class="friend">{{ iou.friend }}</span>
+          <span class="amt" [ngClass]="iou.type">
+            ₹{{ iou.amount }} <small>({{ iou.type }})</small>
+          </span>
+          <span class="date">{{ iou.date | date:'yyyy-MM-dd' }}</span>
+          <span class="status" [ngClass]="iou.status">{{ iou.status }}</span>
+          <span class="note" *ngIf="iou.note">({{ iou.note }})</span>
+          <span class="actions">
+            <button mat-icon-button (click)="startEdit(iou)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button *ngIf="iou.status==='pending'" mat-mini-button color="primary" (click)="markAsCleared(iou.id)">Clear</button>
+            <button *ngIf="iou.status==='cleared'" mat-mini-button color="accent" (click)="markAsPending(iou.id)">Undo</button>
+            <button mat-mini-button color="warn" (click)="deleteIOU(iou.id)">Delete</button>
+          </span>
+        </div>
+
+        <div class="tran-edit-row" *ngIf="editingIouId === iou.id">
+          <mat-form-field>
+            <mat-label>Amount</mat-label>
+            <input matInput type="number" [(ngModel)]="iou.amount">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Note</mat-label>
+            <input matInput [(ngModel)]="iou.note">
+          </mat-form-field>
+          <button mat-mini-button color="primary" (click)="saveEdit(iou)">Save</button>
+          <button mat-mini-button color="warn" (click)="cancelEdit()">Cancel</button>
+        </div>
+      </div>
+    </mat-list>
       </mat-card>
 
 
