@@ -1,19 +1,23 @@
+<!-- Toolbar with Sidenav Toggle (shows on small screens) -->
 <mat-toolbar color="primary" class="main-toolbar">
-  <span>IOU Tracker</span>
-  <span class="spacer"></span>
-  <button mat-icon-button (click)="toggleTheme()" aria-label="Toggle Theme">
-    <mat-icon>{{isDark ? 'light_mode' : 'dark_mode'}}</mat-icon>
+  <button mat-icon-button (click)="sidenav.toggle()" class="sidenav-toggle">
+    <mat-icon>menu</mat-icon>
   </button>
+  <span>IOU Tracker</span>
 </mat-toolbar>
 
 <mat-sidenav-container class="sidenav-container">
-  <!-- <mat-sidenav #sidenav class="side-nav" mode="over" [fixedInViewport]="true" [disableClose]="isDesktop">
+  <!-- Sidenav (optional - for expandable menu/future options/navigation) -->
+  <mat-sidenav #sidenav class="side-nav" mode="over" [fixedInViewport]="true" [disableClose]="isDesktop">
     <mat-toolbar color="primary">Menu</mat-toolbar>
+    <!-- You can put nav here (future) -->
     <button mat-button (click)="sidenav.close()">Close</button>
-  </mat-sidenav> -->
+  </mat-sidenav>
+
   <mat-sidenav-content>
-    <!-- Exportable SHARE SECTION: summary+recent ----------- -->
-    <section class="section" >
+
+    <!-- Summary Section -->
+    <section class="section summary-section">
       <mat-card>
         <div class="summary-header">
           <mat-icon>account_balance_wallet</mat-icon>
@@ -33,12 +37,13 @@
             <span *ngIf="netOverall>0" class="amt receive">₹{{ netOverall }}</span>
             <span *ngIf="netOverall<0" class="amt pay">₹{{ 0-netOverall }}</span>
             <span *ngIf="netOverall===0" class="amt zero">₹{{ netOverall }}</span>
+            <!-- <mat-icon *ngIf="netOverall > 0" color="primary">arrow_downward</mat-icon>
+            <mat-icon *ngIf="netOverall < 0" color="warn">arrow_upward</mat-icon>
+            <mat-icon *ngIf="netOverall === 0" color="accent">arrow_upward</mat-icon> -->
           </span>
         </div>
       </mat-card>
-
     </section>
-    <!-- --------------------------------------------------- -->
 
     <!-- Add IOU Section -->
     <section class="section add-iou-section">
@@ -54,10 +59,12 @@
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
+
           <mat-form-field appearance="fill">
             <mat-label>Amount</mat-label>
             <input matInput type="number" [(ngModel)]="newIOU.amount" name="amount" required min="0">
           </mat-form-field>
+
           <mat-form-field appearance="fill">
             <mat-label>Type</mat-label>
             <mat-select [(ngModel)]="newIOU.type" name="type" required>
@@ -65,20 +72,24 @@
               <mat-option value="receive">Receive</mat-option>
             </mat-select>
           </mat-form-field>
+
           <mat-form-field appearance="fill">
             <mat-label>Date</mat-label>
             <input matInput type="date" [(ngModel)]="newIOU.date" name="date">
           </mat-form-field>
+
           <mat-form-field appearance="fill">
             <mat-label>Note</mat-label>
             <input matInput [(ngModel)]="newIOU.note" name="note">
           </mat-form-field>
+
           <button mat-raised-button color="primary" type="submit" [disabled]="!iouForm.form.valid">Add IOU</button>
         </form>
       </mat-card>
     </section>
 
-    <section class="section" >
+    <!-- Recent Transactions -->
+    <section class="section recent-section">
       <mat-card>
         <h2>Recent Transactions</h2>
         <mat-list>
@@ -101,7 +112,7 @@
     </section>
 
     <!-- Main Transactions List & Edit Table -->
-    <section class="section transactions-section" id="shareSectionToExport">
+    <section class="section transactions-section">
       <mat-card>
         <div class="transactions-header">
           <h2>Transactions</h2>
@@ -128,14 +139,11 @@
             </mat-form-field>
           </div>
           <div class="utility-btns">
-            <button mat-stroked-button color="primary" (click)="exportIOUs()">Export JSON</button>
-            <label mat-stroked-button color="accent" style="color: blue;">
-              Import
-              <input type="file" (change)="importIOUs($event)" hidden>
+            <button mat-stroked-button color="primary" (click)="exportIOUs()">Export</button>
+            <label mat-stroked-button color="accent">
+              Import<input type="file" (change)="importIOUs($event)" hidden>
             </label>
             <button mat-stroked-button color="warn" (click)="clearMutualIOUs()">Clear Balance</button>
-            <button mat-stroked-button color="accent" (click)="shareAsImage()">Image</button>
-            <button mat-stroked-button color="accent" (click)="shareAsPdf()">PDF</button>
           </div>
         </div>
         <mat-list>
@@ -172,11 +180,9 @@
           </mat-list-item>
         </mat-list>
       </mat-card>
-
-
-
     </section>
 
+    <!-- Friend/Filtered Totals cards -->
     <section class="section filter-breakdown-section">
       <mat-card *ngIf="filterFriend.trim()">
         <h3>Balance for "{{ filterFriend }}"</h3>
@@ -202,7 +208,6 @@
         </p>
       </mat-card>
     </section>
-    <!-- Friend/Filtered Totals cards -->
 
   </mat-sidenav-content>
 </mat-sidenav-container>

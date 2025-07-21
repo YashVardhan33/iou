@@ -1,1 +1,139 @@
-/* You can add global styles to this file, and also import other style files */
+// Import Angular Material's prebuilt theme
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+// Base styles
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// Custom theme colors
+$pay-red: #e53935;
+$receive-green: #388e3c;
+$zero-blue: #0288d1;
+
+// Light theme (default)
+:root {
+  --bg-color: #fafafa;
+  --fg-color: #1a1a1a;
+  --card-bg: #ffffff;
+  --card-shadow: 0 2px 8px rgba(60, 60, 60, 0.04);
+  --toolbar-bg: #3f51b5;
+  --toolbar-fg: #ffffff;
+}
+
+// Dark theme
+.dark-theme {
+  --bg-color: #180242;
+  --fg-color: #e5e9f2;
+  --card-bg: #393131;
+  --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  --toolbar-bg: #1e1e1e;
+  --toolbar-fg: #e5e9f2;
+
+  // Override Material Design colors for dark theme
+  .mat-toolbar-single-row, .mat-toolbar {
+    background: var(--toolbar-bg) !important;
+    color: var(--toolbar-fg) !important;
+  }
+
+  .mat-mdc-card {
+    background: var(--card-bg) !important;
+    color: var(--fg-color) !important;
+    box-shadow: var(--card-shadow) !important;
+  }
+
+  .mat-mdc-form-field {
+    .mat-mdc-form-field-focus-overlay {
+      background-color: transparent;
+    }
+
+    .mat-mdc-text-field-wrapper {
+      background-color: rgba(255, 255, 255, 0.05) !important;
+    }
+  }
+
+  .mat-mdc-input-element {
+    color: var(--fg-color) !important;
+  }
+
+  .mat-mdc-form-field-label {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  .mat-mdc-select-value {
+    color: var(--fg-color) !important;
+  }
+
+  .mat-mdc-option {
+    color: var(--fg-color) !important;
+  }
+
+  .mat-mdc-list-item {
+    color: var(--fg-color) !important;
+  }
+
+  .mat-mdc-button, .mat-mdc-outlined-button, .mat-mdc-raised-button {
+    color: var(--fg-color) !important;
+  }
+
+  .mat-mdc-icon {
+    color: var(--fg-color) !important;
+  }
+
+  // Dropdown panels
+  .mat-mdc-autocomplete-panel {
+    background: var(--card-bg) !important;
+  }
+
+  .mat-mdc-select-panel {
+    background: var(--card-bg) !important;
+  }
+}
+
+// Base theming that applies to both themes
+html, body {
+  background-color: var(--bg-color) !important;
+  color: var(--fg-color) !important;
+}
+
+.mat-mdc-card {
+  background-color: var(--card-bg) !important;
+  color: var(--fg-color) !important;
+  box-shadow: var(--card-shadow) !important;
+}
+
+.mat-toolbar-single-row, .mat-toolbar {
+  background: var(--toolbar-bg) !important;
+  color: var(--toolbar-fg) !important;
+}
+
+// Amount colors globally available
+.amt {
+  font-weight: bold;
+  font-size: 1.09rem;
+
+  &.pay {
+    color: $pay-red !important;
+  }
+  &.receive {
+    color: $receive-green !important;
+  }
+  &.zero {
+    color: $zero-blue !important;
+  }
+}
+
+// Status colors
+.status {
+  font-size: 0.95rem;
+
+  &.pending {
+    color: $pay-red !important;
+  }
+  &.cleared {
+    color: $receive-green !important;
+  }
+}

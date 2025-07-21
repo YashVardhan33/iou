@@ -1,0 +1,220 @@
+<mat-toolbar color="primary">
+  <button onclick=""></button>
+  <span>IOU Tracker</span>
+</mat-toolbar>
+<div>
+  <mat-card style="margin: 10px; padding: 10px; display: flex; align-items: center; justify-content: space-between;">
+  <h2>Summary</h2>
+
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <span>Total to Pay: &nbsp;</span>
+    <span style="color: red;">₹{{ totalPay }}</span>
+  </div>
+
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <span>Total to Receive: &nbsp;</span>
+    <span style="color: green;">₹{{ totalReceive }}</span>
+  </div>
+
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <span>Net Overall: &nbsp;</span>
+    <span *ngIf="netOverall>0" style="color: green;">₹{{ netOverall }}</span>
+    <span *ngIf="netOverall<0" style="color: red;">₹{{0- netOverall }}</span>
+    <span *ngIf="netOverall===0" style="color:  rgb(0, 140, 255);">₹{{ netOverall }}</span>
+    <mat-icon *ngIf="netOverall > 0" style="color: green;">vertical_align_bottom</mat-icon>
+    <mat-icon *ngIf="netOverall < 0" style="color: red;">vertical_align_top</mat-icon>
+    <mat-icon *ngIf="netOverall === 0" style="color: rgb(0, 140, 255);">vertical_align_center</mat-icon>
+  </div>
+</mat-card>
+
+</div>
+
+<div>
+
+  <div class="addCard"><mat-card style=" padding: 10px; display: flex; align-items: center; justify-content: space-between;">
+        <h2>Add IOU</h2>
+        <form (ngSubmit)="addIOU()" #iouForm="ngForm">
+          <mat-form-field appearance="fill">
+            <mat-label>Friend</mat-label>
+            <input matInput [matAutocomplete]="auto" [(ngModel)]="newIOU.friend" name="friend" required minlength="3">
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option *ngFor="let friend of friendSuggestions" [value]="friend">
+                {{ friend }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Amount</mat-label>
+            <input matInput type="number" [(ngModel)]="newIOU.amount" name="amount" required min="0">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Type</mat-label>
+            <mat-select [(ngModel)]="newIOU.type" name="type" required>
+              <mat-option value="pay">Pay</mat-option>
+              <mat-option value="receive">Receive</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+        <mat-label>Date</mat-label>
+        <input matInput type="date" [(ngModel)]="newIOU.date" name="date">
+        <!-- <mat-datepicker></mat-datepicker> -->
+        </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Note</mat-label>
+            <input matInput [(ngModel)]="newIOU.note" name="note">
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" type="submit" [disabled]="!iouForm.form.valid">Add IOU</button>
+        </form>
+      </mat-card></div>
+</div>
+<div>
+  <mat-card style=" padding: 10px; display: flex; align-items: center; justify-content: space-between;">
+        <h2>Recent Transactions</h2>
+        <mat-list>
+          <mat-list-item *ngFor="let iou of recentIOUs">
+            Id - {{iou.id}} |
+            {{ iou.friend }} - ₹{{ iou.amount }} ({{ iou.type }})
+            {{ iou.date.substring(0, 10) }}| Status: {{ iou.status }}
+            <button *ngIf="iou.status=='pending'" mat-mini-button color="primary" (click)="markAsCleared(iou.id)">Clear</button>
+          </mat-list-item>
+          <div>
+            <span>Id</span>
+            <span>Name</span>
+            <span>Date</span>
+            <span>Status</span>
+          </div>
+          <div *ngFor="let iou of recentIOUs">
+            <span>{{iou.id}}</span>
+          </div>
+
+        </mat-list>
+      </mat-card>
+</div>
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav mode="side" (closedStart)="true" (openedChange)="true">
+
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div class="content">
+      <!-- Summary -->
+
+
+
+
+
+      <!-- Add IOU -->
+
+
+      <!-- Recent -->
+
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+
+<div>
+  <mat-card>
+  <h2>Transactions</h2>
+  <mat-form-field>
+    <mat-label>Status</mat-label>
+    <mat-select [(ngModel)]="filterStatus" (selectionChange)="applyFilters()">
+      <mat-option value="all">All</mat-option>
+      <mat-option value="pending">Pending</mat-option>
+      <mat-option value="cleared">Cleared</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-list>
+    <!-- <mat-list-item *ngFor="let iou of displayedIOUs">
+      {{ iou.friend }} - ₹{{ iou.amount }} ({{ iou.type }}) | Status: {{ iou.status }}
+      <button mat-mini-button color="primary" *ngIf="iou.status === 'pending'" (click)="markAsCleared(iou.id)">Clear</button>
+      <button mat-mini-button color="accent" *ngIf="iou.status === 'cleared'" (click)="markAsPending(iou.id)">Mark Pending</button>
+    </mat-list-item> -->
+
+    <mat-list-item *ngFor="let iou of displayedIOUs">
+  <div *ngIf="editingIouId !== iou.id">
+    {{ iou.friend }} - ₹{{ iou.amount }} ({{ iou.type }}) | Status: {{ iou.status }}
+    <button mat-icon-button (click)="startEdit(iou)">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-mini-button color="primary" *ngIf="iou.status === 'pending'" (click)="markAsCleared(iou.id)">Clear</button>
+    <button mat-mini-button color="accent" *ngIf="iou.status === 'cleared'" (click)="markAsPending(iou.id)">Mark Pending</button>
+    <button mat-mini-button color="warn" (click)="deleteIOU(iou.id)">Delete</button>
+  </div>
+
+  <div *ngIf="editingIouId === iou.id">
+    <mat-form-field appearance="fill">
+      <mat-label>Amount</mat-label>
+      <input matInput type="number" [(ngModel)]="iou.amount">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Note</mat-label>
+      <input matInput [(ngModel)]="iou.note">
+    </mat-form-field>
+    <button mat-mini-button color="primary" (click)="saveEdit(iou)">Save</button>
+    <button mat-mini-button color="warn" (click)="cancelEdit()">Cancel</button>
+  </div>
+</mat-list-item>
+
+  </mat-list>
+</mat-card>
+
+
+
+</div>
+
+<div>
+  <h3>Filters</h3>
+    <mat-form-field>
+      <mat-label>Friend</mat-label>
+      <input matInput [(ngModel)]="filterFriend" (ngModelChange)="applyFilters()">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>From Date</mat-label>
+      <input matInput type="date" [(ngModel)]="filterFromDate" (change)="applyFilters()">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>To Date</mat-label>
+      <input matInput type="date" [(ngModel)]="filterToDate" (change)="applyFilters()">
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="exportIOUs()">Export JSON</button>
+    <input type="file" (change)="importIOUs($event)">
+
+    <button mat-raised-button color="warn" (click)="clearMutualIOUs()">Clear Balance</button>
+
+</div>
+
+<div>
+  <mat-card *ngIf="filterFriend.trim()">
+  <h3>Balance for "{{ filterFriend }}"</h3>
+  <p>To Pay: <span style="color:red;">₹{{ friendPayTotal }}</span></p>
+  <p>To Receive: <span style="color:green;">₹{{ friendReceiveTotal }}</span></p>
+  <p>
+    Net:
+    <span *ngIf="friendNetBalance > 0" style="color:green;">Receive ₹{{ friendNetBalance }}</span>
+    <span *ngIf="friendNetBalance < 0" style="color:red;">Pay ₹{{ 0 - friendNetBalance }}</span>
+    <span *ngIf="friendNetBalance === 0" style="color:gray;">Settled</span>
+  </p>
+</mat-card>
+
+<mat-card *ngIf="!filterFriend.trim() && (filterFromDate || filterToDate || filterStatus!=='all')">
+  <h3>Filtered Totals</h3>
+  <p>To Pay: <span style="color:red;">₹{{ filteredPayTotal }}</span></p>
+  <p>To Receive: <span style="color:green;">₹{{ filteredReceiveTotal }}</span></p>
+  <p>
+    Net:
+    <span *ngIf="filteredNetBalance > 0" style="color:green;">Receive ₹{{ filteredNetBalance }}</span>
+    <span *ngIf="filteredNetBalance < 0" style="color:red;">Pay ₹{{ 0 - filteredNetBalance }}</span>
+    <span *ngIf="filteredNetBalance === 0" style="color:gray;">Settled</span>
+  </p>
+</mat-card>
+
+</div>
